@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GreetingController {
 
     @GetMapping("/")
-    public String index() {
+    public String index(final HttpServletResponse response) {
         return "index";
     }
 
@@ -29,7 +29,7 @@ public class GreetingController {
     }
 
     @GetMapping("/etag")
-    public String etag() {
+    public String etag(final HttpServletResponse response) {
         return "index";
     }
 
