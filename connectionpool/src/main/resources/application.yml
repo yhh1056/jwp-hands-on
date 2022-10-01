@@ -8,3 +8,7 @@
 #      maximum-pool-size: 15
 #      minimum-idle: 5
 #      connection-timeout: 5000
+
+logging:
+  level:
+    root: trace

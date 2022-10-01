@@ -3,6 +3,7 @@ package jdbc.stage1;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -28,9 +29,13 @@ class Stage1Test {
      */
     @Test
     void testJdbcConnectionPool() throws SQLException {
-        final JdbcConnectionPool jdbcConnectionPool = null;
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setUrl(H2_URL);
+
+        final JdbcConnectionPool jdbcConnectionPool = JdbcConnectionPool.create(dataSource);
 
         assertThat(jdbcConnectionPool.getActiveConnections()).isZero();
+
         try (final var connection = jdbcConnectionPool.getConnection()) {
             assertThat(connection.isValid(1)).isTrue();
             assertThat(jdbcConnectionPool.getActiveConnections()).isEqualTo(1);
@@ -61,14 +66,24 @@ class Stage1Test {
     @Test
     void testHikariCP() {
         final var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(H2_URL);
+
+        hikariConfig.setMaximumPoolSize(5);
+        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        hikariConfig.addDataSourceProperty("useServerPrepStmts", "true");
 
         final var dataSource = new HikariDataSource(hikariConfig);
+
         final var properties = dataSource.getDataSourceProperties();
+
 
         assertThat(dataSource.getMaximumPoolSize()).isEqualTo(5);
         assertThat(properties.getProperty("cachePrepStmts")).isEqualTo("true");
         assertThat(properties.getProperty("prepStmtCacheSize")).isEqualTo("250");
         assertThat(properties.getProperty("prepStmtCacheSqlLimit")).isEqualTo("2048");
+        assertThat(properties.getProperty("useServerPrepStmts")).isEqualTo("true");
 
         dataSource.close();
     }

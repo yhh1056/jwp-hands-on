@@ -21,10 +21,11 @@ public class DataSourceConfig {
         final var hikariConfig = new HikariConfig();
         hikariConfig.setPoolName("gugu");
         hikariConfig.setJdbcUrl(H2_URL);
-        hikariConfig.setUsername(USER);
-        hikariConfig.setPassword(PASSWORD);
+//        hikariConfig.setUsername(USER);
+//        hikariConfig.setPassword(PASSWORD);
         hikariConfig.setMaximumPoolSize(MAXIMUM_POOL_SIZE);
         hikariConfig.setConnectionTestQuery("VALUES 1");
+        hikariConfig.setIdleTimeout(10L);
         hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
